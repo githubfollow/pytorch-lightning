@@ -185,13 +185,15 @@ class TrainerDPMixin(ABC):
         results = self.run_pretrain_routine(model)
         return results
 
-    def tpu_train(self, model: LightningModule, tpu_core_idx: int = None):
+    def tpu_train(self, tpu_core_idx: int, model: LightningModule):
         # call setup after the ddp process has connected
         self.setup('fit')
         if self.is_function_implemented('setup', model):
             model.setup('fit')
 
         # put model on tpu
+        xm.get_ordinal()
+        # TODO, wrong definition of TPU index
         self._device = xm.xla_device(tpu_core_idx) if tpu_core_idx is not None else xm.xla_device()
         model.to(self._device)
 
