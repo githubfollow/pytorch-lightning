@@ -194,7 +194,8 @@ class TrainerDPMixin(ABC):
         # put model on tpu
         xm.get_ordinal()
         # TODO, wrong definition of TPU index
-        self._device = xm.xla_device(tpu_core_idx) if tpu_core_idx is not None else xm.xla_device()
+        # self._device = xm.xla_device(tpu_core_idx) if tpu_core_idx is not None else xm.xla_device()
+        self._device = xm.xla_device()
         model.to(self._device)
 
         # get the appropriate tpu ranks
