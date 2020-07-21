@@ -1003,7 +1003,7 @@ class Trainer(
         elif self.use_horovod:
             results = self.horovod_train(model)
 
-        elif self.single_gpu:
+        elif self.use_single_gpu:
             results = self.single_gpu_train(model)
 
         elif self.use_tpu:  # pragma: no-cover
