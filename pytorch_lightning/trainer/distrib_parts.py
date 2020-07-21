@@ -61,6 +61,7 @@ class TrainerDPMixin(ABC):
     global_rank: int
     tpu_local_core_rank: int
     tpu_global_core_rank: int
+    tpu_id: int
     use_tpu: bool
     data_parallel_device_ids: ...
     progress_bar_callback: ...
@@ -185,7 +186,7 @@ class TrainerDPMixin(ABC):
         results = self.run_pretrain_routine(model)
         return results
 
-    def tpu_train(self, tpu_core_idx: int, model: LightningModule):
+    def tpu_train(self, idx: int, model: LightningModule):
         # call setup after the ddp process has connected
         self.setup('fit')
         if self.is_function_implemented('setup', model):
@@ -193,7 +194,7 @@ class TrainerDPMixin(ABC):
 
         # TODO, wrong definition of TPU index
         # put model on tpu
-        self._device = xm.xla_device(tpu_core_idx) if tpu_core_idx is not None else xm.xla_device()
+        self._device = xm.xla_device(self.tpu_id) if self.tpu_id is not None else xm.xla_device()
         # self._device = xm.xla_device()
         print(xm.get_ordinal())
         model.to(self._device)
